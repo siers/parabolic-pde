@@ -1,6 +1,7 @@
 set terminal pngcairo  transparent font "arial,10" fontscale 1.0 size 500,400
 set output 'IMAGENAME'
 
+set object 1 rectangle from screen 0,0 to screen 1,1 fillcolor rgb"white" behind
 set mouse
 set border 4095 front linecolor -1 linewidth 1.000
 set style data lines
