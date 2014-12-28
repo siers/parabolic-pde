@@ -1,7 +1,8 @@
 set terminal pngcairo  transparent font "arial,10" fontscale 1.0 size 500,400
 set output 'IMAGENAME'
 
-set object 1 rectangle from screen 0,0 to screen 1,1 fillcolor rgb"white" behind
+set object 1 rectangle from screen -1,-1 to screen 2,2 fillcolor rgb"white" behind
+set key at -60.0,0.0,800.0
 set mouse
 set border 4095 front linecolor -1 linewidth 1.000
 set style data lines
@@ -13,6 +14,6 @@ set view 46, 233
 
 set hidden3d
 
-splot 'data' u 1:2:3 with pm3d pal t ''
+splot 'data' u 1:2:3 with pm3d pal t 'PLOTTITLE'
 
 pause -1

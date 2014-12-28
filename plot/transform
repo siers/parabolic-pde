@@ -3,7 +3,9 @@
 transform() {
     convert "$1" -resize 15% /dev/stdout \
         | ./datify | sed '2,$s/^0 /\n0 /g' > data
-    sed "s!IMAGENAME!$2!" < render | gnuplot
+
+    title=$(basename $(echo "$2") | sed 's/\..*//')
+    sed "s!IMAGENAME!$2!; s!PLOTTITLE!$2!" < render | gnuplot
 }
 
 mkdir -p plots
