@@ -1,4 +1,0 @@
-$<.each_line do |l|
-    i = l.match(/\d{2,}/)[0].to_i
-    puts(l) if i == 1 || i % 200 == 0
-end

@@ -1,9 +1,8 @@
 #!/bin/sh
 
-if [ -z "$1" ]; then
-    echo Please hand in the target directory with plotted pngs.
+if [ -z "$2" ]; then
+    echo "Usage: $0 <src-dir> <framerate-in-milisecs>"
     exit
 fi
 
-a="$1"
-convert -delay 10 -loop 0 $(find "$a" | grep png | sort -n) animation.gif
+convert -delay $2 -loop 0 $(find "$1" | grep png | sort -n) animation.gif

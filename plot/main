@@ -1,10 +1,14 @@
 #!/bin/sh
 
-if [ -z "$1" ]; then
-    echo Please hand in the target directory with frame pngs.
+if [ -z "$3" ]; then
+    echo "Usage: $0 <source dir> <every-nth-frame like 250> <every-milisecond like 20>"
     exit
 fi
 
-find $1 -type f | sort -n | ruby modfilter | xargs -L 1 -d '\n' ./transform
+src="$1"; shift
+nth="$1"; shift
+sec="$1"; shift
+
+find $src -type f | sort -n | awk "NR % $nth == 0 || NR == 1 { print \$0 }" | xargs -L 1 -d '\n' ./transform
 echo -e "\nAnimating."
-./animate plots
+./animate plots $sec
