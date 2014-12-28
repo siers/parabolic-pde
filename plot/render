@@ -1,6 +1,8 @@
 set terminal pngcairo  transparent font "arial,10" fontscale 1.0 size 500,400
 set output 'IMAGENAME'
 
+set cbrange [0:300]
+set palette defined (0 '#000000', 30 '#5e0013', 97 '#bd0026', 164 '#fd8d3c', 231 '#feb24c', 300 '#ffffb2')
 set object 1 rectangle from screen -1,-1 to screen 2,2 fillcolor rgb"white" behind
 set key at -60.0,0.0,800.0
 set mouse
@@ -9,6 +11,7 @@ set style data lines
 set xlabel "x"
 set ylabel "y"
 set zlabel "t°"
+set zrange [0:300]
 set view 46, 233
 #set view 53, 224
 
