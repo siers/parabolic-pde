@@ -5,13 +5,12 @@ import Control.Monad.Loops
 import Data.Array.Repa as Repa hiding ((++))
 import Data.Array.Repa.Stencil
 import Data.Array.Repa.Stencil.Dim2
+import Data.Functor
 import Data.Word
 import qualified Data.ByteString as BS
+import Safe.Exact
 import System.Environment (getArgs)
 import Text.Printf
-
-steps = 10000 :: Int
-t     = 0.2
 
 pdeStencil = makeStencil2 3 3
     (\ix -> case ix of
@@ -21,6 +20,8 @@ pdeStencil = makeStencil2 3 3
                 Z :.  1 :.  0  -> Just 1
                 Z :.  0 :.  0  -> Just (-4)
                 _              -> Nothing)
+
+t = 0.2
 
 diffuse :: (Int, (Array U DIM2 Double)) -> IO (Int, (Array U DIM2 Double))
 diffuse (n, a) = do
@@ -39,16 +40,19 @@ monochromify :: DynamicImage -> Image Word8
 monochromify (ImageRGBA8 i) = pixelMap (\(PixelRGBA8 r _ _ _) -> 1 - (r `div` 128)) i
 monochromify (ImageRGB8 i)  = pixelMap (\(PixelRGB8  r _ _  ) -> 1 - (r `div` 128)) i
 
-out :: Int -> Array U DIM2 Double -> IO ()
-out nr arr = writePng name $ generateImage (\x y -> discretize $ arr ! ((Z :. y) :. x)) w h
+out :: Int -> Int -> Array U DIM2 Double -> IO ()
+out steps nr arr = writePng name $ generateImage (\x y -> discretize $ arr ! ((Z :. y) :. x)) w h
     where
         [w, h]     = listOfShape . extent $ arr
         discretize = floor . (*255) :: Double -> Word8
         name       = printf ("frame-%0" ++ show zeros ++ "i.png") nr
         zeros      = 1 + floor (logBase 10 (fromIntegral steps))
 
-main = either error (run . numerify . monochromify) . decodeImage =<< read
+main' :: Int -> IO (Int, Array U DIM2 Double)
+main' steps = either error (run . numerify . monochromify) . decodeImage =<< read
     where
         read   = BS.readFile "/dev/stdin"
         run    = iterateUntilM ((== steps) . fst) step . ((,) 0)
-        step a = diffuse a >>= (\a' -> uncurry out a' >> return a')
+        step a = diffuse a >>= (\a' -> uncurry (out steps) a' >> return a')
+
+main = maybe (error "Pass the step count!") main' . fmap (read . head) . takeExactMay 1 =<< getArgs
