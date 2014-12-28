@@ -1,0 +1,17 @@
+set terminal pngcairo  transparent font "arial,10" fontscale 1.0 size 500,400
+set output 'IMAGENAME'
+
+set mouse
+set border 4095 front linecolor -1 linewidth 1.000
+set style data lines
+set xlabel "x"
+set ylabel "y"
+set zlabel "t°"
+set view 46, 233
+#set view 53, 224
+
+set hidden3d
+
+splot 'data' u 1:2:3 with pm3d pal t ''
+
+pause -1

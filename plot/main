@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ -z "$1" ]; then
+    echo Please hand in the target directory with frame pngs.
+    exit
+fi
+
+find $1 -type f | sort -n | ruby modfilter | xargs -L 1 -d '\n' ./transform
+echo -e "\nAnimating."
+#./animate plots

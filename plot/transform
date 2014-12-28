@@ -1,0 +1,14 @@
+#!/bin/sh
+
+transform() {
+    convert "$1" -resize 15% /dev/stdout \
+        | ./datify | sed '2,$s/^0 /\n0 /g' > data
+    sed "s!IMAGENAME!$2!" < render | gnuplot
+}
+
+mkdir -p plots
+target="plots/plot-$(basename $1)"
+if ! [ -e "$target" ]; then
+    echo -ne "\\rGenerating $target."
+    transform "$1" $target
+fi

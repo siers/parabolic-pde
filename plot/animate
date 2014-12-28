@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ -z "$1" ]; then
+    echo Please hand in the target directory with plotted pngs.
+    exit
+fi
+
+a="$1"
+convert -delay 50 -loop 0 $(find "$a" | grep png | sort -n) animation.gif

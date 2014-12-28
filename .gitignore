@@ -1,0 +1,9 @@
+input
+output
+plot/plots
+plot/data
+plot/animation.gif
+*.hi
+*.o
+parabolic-pde
+plot/datify
