@@ -1,14 +1,22 @@
 #!/bin/sh
 
-if [ -z "$3" ]; then
-    echo "Usage: $0 <source dir> <every-nth-frame like 250> <every-milisecond like 20>"
+die() {
+    echo "$@"
     exit
+}
+
+if [ -z "$3" ]; then
+    die "Usage: $0 <source dir> <every-nth-frame like 250> <every-milisecond like 20>"
 fi
 
-src="$1"; shift
+src=$(readlink -f "$1"); shift
 nth="$1"; shift
 sec="$1"; shift
 
-find $src -type f | sort -n | awk "NR % $nth == 0 || NR == 1 { print \$0 }" | xargs -L 1 -d '\n' ./transform
+[ -e plot/main ] && cd plot
+ls transform animate render > /dev/null 2>&1 || \
+    die "Cannot find one of following files: transform, animate, render. Quitting."
+
+find $src -type f | grep png | sort -n | awk "NR % $nth == 0 || NR == 1 { print \$0 }" | xargs -L 1 -d '\n' ./transform
 echo -e "\nAnimating."
 ./animate plots $sec
